@@ -1,0 +1,1820 @@
+<!-- Note: This file was developed with the assistance of AI code generation tools. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particulate Matter Monitoring Station</title>
+    <style>
+        :root {
+            --page-bg: #eef2f0;
+            --wash-one: rgba(143, 197, 190, 0.42);
+            --wash-two: rgba(219, 188, 151, 0.34);
+            --wash-three: rgba(127, 142, 166, 0.18);
+            --material-top: rgba(255, 255, 255, 0.72);
+            --material-bottom: rgba(255, 255, 255, 0.30);
+            --surface: rgba(255, 255, 255, 0.42);
+            --surface-strong: rgba(255, 255, 255, 0.64);
+            --surface-muted: rgba(255, 255, 255, 0.24);
+            --line: rgba(255, 255, 255, 0.38);
+            --line-strong: rgba(255, 255, 255, 0.56);
+            --text: #142022;
+            --muted: rgba(20, 32, 34, 0.58);
+            --quiet: rgba(20, 32, 34, 0.42);
+            --accent: #2a9d8f;
+            --accent-soft: rgba(42, 157, 143, 0.14);
+            --accent-glass: rgba(42, 157, 143, 0.28);
+            --system-blue: #007aff;
+            --system-green: #34c759;
+            --warning: #b7791f;
+            --danger: #ad4f6b;
+            --shadow: 0 30px 88px rgba(47, 63, 76, 0.16);
+            --inner: inset 0 1px 0 rgba(255, 255, 255, 0.88), inset 0 -1px 0 rgba(255, 255, 255, 0.16);
+        }
+
+        body.theme-clear {
+            --page-bg: #edf4f1;
+            --wash-one: rgba(119, 193, 184, 0.42);
+            --wash-two: rgba(195, 218, 202, 0.36);
+            --accent: #2a9d8f;
+            --accent-soft: rgba(42, 157, 143, 0.14);
+            --accent-glass: rgba(42, 157, 143, 0.26);
+        }
+
+        body.theme-moderate {
+            --page-bg: #f4f0e9;
+            --wash-one: rgba(225, 186, 116, 0.42);
+            --wash-two: rgba(133, 176, 169, 0.28);
+            --accent: #b7791f;
+            --accent-soft: rgba(183, 121, 31, 0.14);
+            --accent-glass: rgba(183, 121, 31, 0.26);
+        }
+
+        body.theme-unhealthy {
+            --page-bg: #f1ecef;
+            --wash-one: rgba(188, 108, 131, 0.36);
+            --wash-two: rgba(106, 126, 147, 0.24);
+            --accent: #ad4f6b;
+            --accent-soft: rgba(173, 79, 107, 0.14);
+            --accent-glass: rgba(173, 79, 107, 0.24);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            position: relative;
+            min-height: 100vh;
+            margin: 0;
+            padding: 28px 24px 118px;
+            background:
+                linear-gradient(120deg, rgba(255,255,255,0.62), transparent 24%, rgba(255,255,255,0.38) 52%, transparent 78%),
+                linear-gradient(285deg, transparent 0 34%, rgba(255,255,255,0.28) 48%, transparent 62%),
+                radial-gradient(ellipse at 18% -8%, var(--wash-one), transparent 38rem),
+                radial-gradient(ellipse at 86% 2%, var(--wash-two), transparent 42rem),
+                linear-gradient(135deg, var(--page-bg), #fbfcfa 46%, #e7ecee);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+            transition: background 900ms ease;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.24) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px);
+            background-size: 72px 72px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.42), transparent 68%);
+            opacity: 0.42;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(118deg, transparent 8%, rgba(255,255,255,0.18) 32%, transparent 48%),
+                linear-gradient(242deg, transparent 40%, rgba(255,255,255,0.16) 58%, transparent 76%);
+            mix-blend-mode: soft-light;
+            opacity: 0.74;
+        }
+
+        .app-shell {
+            position: relative;
+            z-index: 1;
+            width: min(1180px, 100%);
+            margin: 0 auto;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 18px;
+            min-height: 42px;
+            padding: 0;
+        }
+
+        .connection-strip {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+            width: fit-content;
+            padding: 6px;
+            border-radius: 999px;
+            border: 1px solid var(--line-strong);
+            background:
+                linear-gradient(145deg, rgba(255,255,255,0.68), rgba(255,255,255,0.26) 52%, rgba(255,255,255,0.44)),
+                rgba(255,255,255,0.28);
+            box-shadow:
+                0 18px 48px rgba(47, 63, 76, 0.12),
+                inset 0 1px 0 rgba(255,255,255,0.90),
+                inset 0 -1px 0 rgba(255,255,255,0.18);
+            backdrop-filter: blur(32px) saturate(190%);
+            -webkit-backdrop-filter: blur(32px) saturate(190%);
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 36px;
+            padding: 0 12px;
+            border-radius: 999px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.62), rgba(255,255,255,0.30)),
+                var(--surface);
+            border: 1px solid var(--line);
+            color: var(--muted);
+            box-shadow: var(--inner);
+            font-size: 0.86rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-pill.live {
+            color: color-mix(in srgb, var(--accent) 68%, #102124);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.58), rgba(255,255,255,0.28)),
+                var(--accent-soft);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #9aa4a6;
+            box-shadow: 0 0 0 4px rgba(154, 164, 166, 0.12);
+        }
+
+        .status-pill.live .status-dot {
+            background: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-soft);
+            animation: livePulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 4px var(--accent-soft); }
+            50% { transform: scale(0.82); box-shadow: 0 0 0 7px rgba(42, 157, 143, 0.08); }
+        }
+
+        input {
+            width: 126px;
+            height: 38px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.62), rgba(255,255,255,0.28)),
+                rgba(255, 255, 255, 0.34);
+            color: var(--text);
+            padding: 0 12px;
+            outline: none;
+            font-size: 0.92rem;
+            font-weight: 560;
+            box-shadow: var(--inner), 0 8px 18px rgba(47, 63, 76, 0.06);
+        }
+
+        input[type="password"] { width: 106px; }
+        input::placeholder { color: var(--quiet); }
+        input:focus { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+
+        button {
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-small, .export-btn {
+            height: 38px;
+            border: 0;
+            border-radius: 999px;
+            padding: 0 16px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.26), transparent),
+                var(--system-blue);
+            color: #fff;
+            font-size: 0.92rem;
+            font-weight: 680;
+            cursor: pointer;
+            box-shadow: 0 14px 28px rgba(0, 122, 255, 0.22), inset 0 1px 0 rgba(255,255,255,0.28);
+            transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+        }
+
+        .export-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+
+        .export-btn svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .btn-small:hover, .export-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 34px rgba(0, 122, 255, 0.26), inset 0 1px 0 rgba(255,255,255,0.32);
+        }
+
+        .btn-small:active, .export-btn:active { transform: translateY(0); }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.45fr);
+            gap: 18px;
+            align-items: stretch;
+            margin-bottom: 18px;
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            border-top-color: rgba(255, 255, 255, 0.72);
+            background:
+                linear-gradient(150deg, var(--material-top), rgba(255,255,255,0.32) 48%, var(--material-bottom)),
+                linear-gradient(125deg, rgba(255,255,255,0.62), transparent 36%, var(--accent-soft) 82%),
+                var(--surface);
+            box-shadow: var(--shadow), var(--inner);
+            backdrop-filter: blur(36px) saturate(190%);
+            -webkit-backdrop-filter: blur(36px) saturate(190%);
+        }
+
+        .panel::before {
+            content: "";
+            position: absolute;
+            left: 18px;
+            right: 18px;
+            top: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.94), transparent);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .panel::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(135deg, rgba(255,255,255,0.70), transparent 26%),
+                linear-gradient(72deg, transparent 42%, rgba(255,255,255,0.24) 51%, transparent 62%),
+                linear-gradient(to bottom, rgba(255,255,255,0.28), transparent 24%, rgba(255,255,255,0.18));
+            opacity: 0.78;
+        }
+
+        .panel > * { position: relative; z-index: 1; }
+
+        .hero-panel {
+            min-height: 390px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background:
+                linear-gradient(140deg, rgba(255,255,255,0.74), rgba(255,255,255,0.34) 58%, var(--accent-soft)),
+                var(--surface);
+        }
+
+        .eyebrow {
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 760;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            margin: 9px 0 0;
+            font-size: 1.16rem;
+            line-height: 1.2;
+            font-weight: 680;
+        }
+
+        .hero-value {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin: 38px 0 12px;
+            color: var(--text);
+            line-height: 0.9;
+        }
+
+        #val-pm25 {
+            font-size: clamp(4.8rem, 8.2vw, 6.6rem);
+            font-weight: 760;
+            letter-spacing: 0;
+            font-variant-numeric: tabular-nums;
+            background: linear-gradient(180deg, #071012, color-mix(in srgb, var(--accent) 36%, #102124));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-unit {
+            color: var(--muted);
+            font-size: 1.08rem;
+            font-weight: 560;
+            white-space: nowrap;
+        }
+
+        #aqi-descriptor {
+            display: inline-flex;
+            width: fit-content;
+            padding: 8px 11px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: color-mix(in srgb, var(--accent) 74%, #0c1112);
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .hero-stat {
+            min-width: 0;
+            padding: 15px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.42);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.48), rgba(255,255,255,0.18)),
+                rgba(255,255,255,0.24);
+            box-shadow: var(--inner), 0 8px 22px rgba(47, 63, 76, 0.06);
+            backdrop-filter: blur(18px) saturate(160%);
+            -webkit-backdrop-filter: blur(18px) saturate(160%);
+        }
+
+        .hero-stat-label {
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 760;
+            letter-spacing: 0.04em;
+        }
+
+        .hero-stat-value {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            margin-top: 8px;
+            font-size: 1.36rem;
+            font-weight: 560;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .unit {
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 650;
+            white-space: nowrap;
+        }
+
+        .chart-panel {
+            min-height: 390px;
+            padding: 24px 24px 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 30;
+        }
+
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 720;
+        }
+
+        .panel-subtitle {
+            margin-top: 2px;
+            color: var(--muted);
+            font-size: 0.82rem;
+            font-weight: 540;
+        }
+
+        .chart-container {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            min-height: 290px;
+            width: 100%;
+            padding: 8px;
+            border-radius: 14px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.30), rgba(255,255,255,0.12)),
+                rgba(255,255,255,0.16);
+            border: 1px solid rgba(255, 255, 255, 0.30);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.42);
+        }
+
+        #telemetryChart {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .layers-wrapper { position: relative; z-index: 60; }
+
+        .btn-icon-bare {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.58), rgba(255,255,255,0.24)),
+                var(--surface-muted);
+            color: var(--text);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            box-shadow: var(--inner);
+            transition: transform 160ms ease, box-shadow 160ms ease;
+        }
+
+        .btn-icon-bare:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--inner), 0 12px 24px rgba(47, 63, 76, 0.14);
+        }
+
+        .btn-icon-bare svg {
+            width: 19px;
+            height: 19px;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 42px;
+            display: none;
+            min-width: 208px;
+            padding: 7px;
+            border-radius: 14px;
+            background:
+                linear-gradient(180deg, rgba(45, 55, 58, 0.96), rgba(18, 25, 27, 0.92));
+            color: #fff;
+            box-shadow: 0 18px 48px rgba(15, 20, 22, 0.26);
+            z-index: 1000;
+            border: 1px solid rgba(255,255,255,0.14);
+            backdrop-filter: blur(22px) saturate(150%);
+            -webkit-backdrop-filter: blur(22px) saturate(150%);
+            pointer-events: auto;
+        }
+
+        .dropdown-menu.show { display: block; }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: rgba(255,255,255,0.74);
+            font-size: 0.88rem;
+            font-weight: 590;
+        }
+
+        .dropdown-item:hover { background: rgba(255,255,255,0.08); }
+        .dropdown-item.active { color: #fff; }
+        .dropdown-item .check { width: 13px; height: 13px; opacity: 0; }
+        .dropdown-item.active .check { opacity: 1; }
+        .dropdown-item .indicator { width: 9px; height: 9px; border-radius: 50%; }
+
+        .sd-panel {
+            margin-bottom: 18px;
+            padding: 18px;
+        }
+
+        .sd-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .sd-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .sd-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .sd-file-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 14px;
+            min-height: 42px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.42);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.44), rgba(255,255,255,0.20)),
+                rgba(255, 255, 255, 0.28);
+            box-shadow: var(--inner), 0 7px 18px rgba(47, 63, 76, 0.05);
+            cursor: pointer;
+            transition: transform 160ms ease, box-shadow 160ms ease;
+        }
+
+        .sd-file-row:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--inner), 0 12px 24px rgba(47, 63, 76, 0.12);
+        }
+
+        .sd-file-name {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-weight: 650;
+            white-space: nowrap;
+        }
+
+        .sd-file-size,
+        .sd-empty {
+            color: var(--muted);
+            font-size: 0.82rem;
+            font-weight: 620;
+            white-space: nowrap;
+        }
+
+        .sd-viewer {
+            display: none;
+            margin-top: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.42);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.44), rgba(255,255,255,0.20)),
+                rgba(255, 255, 255, 0.28);
+            box-shadow: var(--inner), 0 7px 18px rgba(47, 63, 76, 0.05);
+            overflow: hidden;
+        }
+
+        .sd-viewer.show { display: block; }
+
+        .sd-viewer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.38);
+        }
+
+        .sd-viewer-title {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .sd-download-btn {
+            height: 30px;
+            padding: 0 12px;
+            font-size: 0.82rem;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.26), transparent),
+                var(--system-green);
+            box-shadow: 0 10px 20px rgba(52, 199, 89, 0.20), inset 0 1px 0 rgba(255,255,255,0.30);
+        }
+
+        .sd-file-preview {
+            max-height: 280px;
+            margin: 0;
+            padding: 12px;
+            overflow: auto;
+            color: var(--text);
+            font-family: "SF Mono", Menlo, Consolas, monospace;
+            font-size: 0.78rem;
+            line-height: 1.45;
+            white-space: pre;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .metric-panel {
+            padding: 18px;
+        }
+
+        .metric-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .metric-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: baseline;
+            gap: 14px;
+            min-height: 50px;
+            padding: 13px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.42);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.44), rgba(255,255,255,0.20)),
+                rgba(255, 255, 255, 0.28);
+            box-shadow: var(--inner), 0 7px 18px rgba(47, 63, 76, 0.05);
+        }
+
+        .metric-label {
+            min-width: 0;
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 650;
+        }
+
+        .metric-value {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            color: var(--text);
+            font-size: 1.18rem;
+            font-weight: 590;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        .particle-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .sensor-grid,
+        .plantower-raw {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .raw-cell {
+            min-width: 0;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.42);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.44), rgba(255,255,255,0.20)),
+                rgba(255, 255, 255, 0.28);
+            box-shadow: var(--inner), 0 7px 18px rgba(47, 63, 76, 0.05);
+        }
+
+        .raw-label {
+            color: var(--muted);
+            font-size: 0.74rem;
+            font-weight: 720;
+        }
+
+        .raw-value {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            margin-top: 7px;
+            font-size: 1.08rem;
+            font-weight: 590;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .bottom-panel {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            max-width: calc(100% - 24px);
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background:
+                linear-gradient(145deg, rgba(255,255,255,0.68), rgba(255,255,255,0.28) 54%, rgba(255,255,255,0.44)),
+                rgba(248, 250, 248, 0.44);
+            box-shadow: 0 22px 62px rgba(47, 63, 76, 0.18), var(--inner);
+            backdrop-filter: blur(34px) saturate(190%);
+            -webkit-backdrop-filter: blur(34px) saturate(190%);
+            z-index: 100;
+        }
+
+        .segment-group {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(88px, 1fr));
+            gap: 2px;
+            padding: 4px;
+            border-radius: 999px;
+            background:
+                linear-gradient(180deg, rgba(20,32,34,0.08), rgba(20,32,34,0.03)),
+                rgba(20, 32, 34, 0.06);
+            box-shadow: inset 0 1px 2px rgba(20,32,34,0.08), inset 0 1px 0 rgba(255,255,255,0.36);
+        }
+
+        .segment-bg { display: none; }
+
+        .segment-btn {
+            height: 34px;
+            border: 0;
+            border-radius: 999px;
+            background: transparent;
+            color: var(--muted);
+            padding: 0 13px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+        }
+
+        .segment-btn.active {
+            background: rgba(255,255,255,0.72);
+            color: var(--text);
+            box-shadow: var(--inner), 0 7px 16px rgba(47, 63, 76, 0.14);
+        }
+
+        .heater-off #btn-off,
+        #heater-group:not(.heater-off) #btn-on,
+        .mode-manual #btn-manual,
+        #mode-group:not(.mode-manual) #btn-auto {
+            background: rgba(255,255,255,0.72);
+            color: var(--text);
+            box-shadow: var(--inner), 0 7px 16px rgba(47, 63, 76, 0.14);
+        }
+
+        .export-btn {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.26), transparent),
+                var(--system-green);
+            box-shadow: 0 14px 28px rgba(52, 199, 89, 0.24), inset 0 1px 0 rgba(255,255,255,0.30);
+        }
+
+        .sd-refresh-btn {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.26), transparent),
+                var(--accent);
+            box-shadow: 0 14px 28px var(--accent-soft), inset 0 1px 0 rgba(255,255,255,0.30);
+        }
+
+        .sd-remount-btn {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.26), transparent),
+                var(--system-green);
+            box-shadow: 0 14px 28px rgba(52, 199, 89, 0.22), inset 0 1px 0 rgba(255,255,255,0.30);
+        }
+
+        @media (max-width: 980px) {
+            body { padding: 20px 14px 132px; }
+            .connection-strip { justify-content: flex-start; }
+            .dashboard-grid, .section-grid, .particle-grid { grid-template-columns: 1fr; }
+            .hero-panel, .chart-panel { min-height: auto; }
+            .chart-container { height: 320px; }
+        }
+
+        @media (max-width: 640px) {
+            .connection-strip { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+            .status-pill, .btn-small, input { width: 100%; }
+            input[type="password"] { width: 100%; }
+            #val-pm25 { font-size: 3.6rem; }
+            .hero-stats, .sensor-grid, .plantower-raw { grid-template-columns: 1fr; }
+            .bottom-panel {
+                left: 12px;
+                right: 12px;
+                transform: none;
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="theme-clear">
+    <main class="app-shell">
+        <header class="top-bar">
+            <div class="connection-strip">
+                <span id="connection-status" class="status-pill"><span class="status-dot"></span><span id="connection-label">Offline</span></span>
+                <input type="text" id="ipAddress" value="192.168.4.1" placeholder="IP">
+                <input type="password" id="webReplPass" placeholder="Pass">
+                <button id="connectBtn" class="btn-small">Connect</button>
+            </div>
+        </header>
+
+        <section class="dashboard-grid">
+            <div class="panel hero-panel">
+                <div>
+                    <div class="eyebrow">Primary Air Quality</div>
+                    <h1 class="hero-title">Sensirion SPS30 PM2.5</h1>
+                    <div class="hero-value"><span id="val-pm25">--</span><span class="hero-unit">µg/m³</span></div>
+                    <div id="aqi-descriptor">Awaiting System Data</div>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-label">PM 1.0</div>
+                        <div class="hero-stat-value"><span id="val-pm1">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-label">PM 4.0</div>
+                        <div class="hero-stat-value"><span id="val-pm4">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-label">PM 10</div>
+                        <div class="hero-stat-value"><span id="val-pm10">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-label">Typical Size</div>
+                        <div class="hero-stat-value"><span id="val-sps-tps">--</span><span class="unit">µm</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel chart-panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="eyebrow">Live Telemetry</div>
+                        <div class="panel-subtitle">45-sample rolling view</div>
+                    </div>
+                    <div class="layers-wrapper">
+                        <button class="btn-icon-bare" onclick="toggleLayerMenu(event)" aria-label="Select chart layers">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"></path><path d="m2 12 10 5 10-5"></path><path d="m2 17 10 5 10-5"></path></svg>
+                        </button>
+                        <div class="dropdown-menu" id="layer-menu"></div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="telemetryChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel sd-panel">
+            <div class="sd-header">
+                <div>
+                    <div class="eyebrow">SD Card Files</div>
+                    <div class="panel-subtitle" id="sd-status">Connect, then refresh to list card contents</div>
+                </div>
+                <div class="sd-actions">
+                    <button class="btn-small sd-remount-btn" onclick="remountSdCard()">Remount</button>
+                    <button class="btn-small sd-refresh-btn" onclick="refreshSdFiles()">Refresh</button>
+                </div>
+            </div>
+            <div class="sd-list" id="sd-file-list">
+                <div class="sd-empty">No files loaded</div>
+            </div>
+            <div class="sd-viewer" id="sd-viewer">
+                <div class="sd-viewer-header">
+                    <div class="sd-viewer-title" id="sd-viewer-title">No file selected</div>
+                    <button class="btn-small sd-download-btn" onclick="downloadOpenSdFile()">Download</button>
+                </div>
+                <pre class="sd-file-preview" id="sd-file-preview"></pre>
+            </div>
+        </section>
+
+        <section class="section-grid">
+            <div class="panel metric-panel">
+                <div class="eyebrow">Ambient Air</div>
+                <div class="metric-list">
+                    <div class="metric-row">
+                        <div class="metric-label">Temperature</div>
+                        <div class="metric-value"><span id="val-ambt">--</span><span class="unit">°C</span></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">Humidity</div>
+                        <div class="metric-value"><span id="val-ambh">--</span><span class="unit">%</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel metric-panel">
+                <div class="eyebrow">Conditioned Air</div>
+                <div class="metric-list">
+                    <div class="metric-row">
+                        <div class="metric-label">Temperature</div>
+                        <div class="metric-value"><span id="val-dhtt">--</span><span class="unit">°C</span></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">Humidity</div>
+                        <div class="metric-value"><span id="val-dhth">--</span><span class="unit">%</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel metric-panel">
+                <div class="eyebrow">Heater Safety</div>
+                <div class="metric-list">
+                    <div class="metric-row">
+                        <div class="metric-label">Thermistor</div>
+                        <div class="metric-value"><span id="val-wall">--</span><span class="unit">°C</span></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">Control Source</div>
+                        <div class="metric-value"><span id="heater-source">Conditioned</span><span class="unit">air</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="particle-grid">
+            <div class="panel metric-panel">
+                <div class="eyebrow">Sensirion SPS30 Mass</div>
+                <div class="metric-list">
+                    <div class="metric-row">
+                        <div class="metric-label">PM 1.0</div>
+                        <div class="metric-value"><span id="val-sps-pm1">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">PM 2.5</div>
+                        <div class="metric-value"><span id="val-sps-pm25">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">PM 4.0</div>
+                        <div class="metric-value"><span id="val-sps-pm4">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">PM 10</div>
+                        <div class="metric-value"><span id="val-sps-pm10">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">Typical Particle Size</div>
+                        <div class="metric-value"><span id="val-sps-tps-detail">--</span><span class="unit">µm</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel metric-panel">
+                <div class="eyebrow">Sensirion SPS30 Counts</div>
+                <div class="sensor-grid">
+                    <div class="raw-cell">
+                        <div class="raw-label">&gt; 0.5 µm</div>
+                        <div class="raw-value"><span id="val-sps-c05">--</span><span class="unit">#/cm³</span></div>
+                    </div>
+                    <div class="raw-cell">
+                        <div class="raw-label">&gt; 1.0 µm</div>
+                        <div class="raw-value"><span id="val-sps-c10">--</span><span class="unit">#/cm³</span></div>
+                    </div>
+                    <div class="raw-cell">
+                        <div class="raw-label">&gt; 2.5 µm</div>
+                        <div class="raw-value"><span id="val-sps-c25">--</span><span class="unit">#/cm³</span></div>
+                    </div>
+                    <div class="raw-cell">
+                        <div class="raw-label">&gt; 4.0 µm</div>
+                        <div class="raw-value"><span id="val-sps-c40">--</span><span class="unit">#/cm³</span></div>
+                    </div>
+                    <div class="raw-cell">
+                        <div class="raw-label">&gt; 10 µm</div>
+                        <div class="raw-value"><span id="val-sps-c100">--</span><span class="unit">#/cm³</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel metric-panel">
+                <div class="eyebrow">Plantower PMS5003 Standard</div>
+                <div class="metric-list">
+                    <div class="metric-row">
+                        <div class="metric-label">PM 1.0</div>
+                        <div class="metric-value"><span id="val-pt-pm1-std">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">PM 2.5</div>
+                        <div class="metric-value"><span id="val-pt-pm25-std">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">PM 10</div>
+                        <div class="metric-value"><span id="val-pt-pm10-std">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel metric-panel">
+                <div class="eyebrow">Plantower PMS5003 Atmospheric</div>
+                <div class="metric-list">
+                    <div class="metric-row">
+                        <div class="metric-label">PM 1.0</div>
+                        <div class="metric-value"><span id="val-pt-pm1-env">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">PM 2.5</div>
+                        <div class="metric-value"><span id="val-pt-pm25-env">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">PM 10</div>
+                        <div class="metric-value"><span id="val-pt-pm10-env">--</span><span class="unit">µg/m³</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel metric-panel">
+                <div class="eyebrow">Plantower PMS5003 Counts</div>
+                <div class="sensor-grid">
+                    <div class="raw-cell">
+                        <div class="raw-label">&gt; 0.3 µm</div>
+                        <div class="raw-value"><span id="val-pt-r03">--</span><span class="unit">cnt/0.1L</span></div>
+                    </div>
+                    <div class="raw-cell">
+                        <div class="raw-label">&gt; 0.5 µm</div>
+                        <div class="raw-value"><span id="val-pt-r05">--</span><span class="unit">cnt/0.1L</span></div>
+                    </div>
+                    <div class="raw-cell">
+                        <div class="raw-label">&gt; 1.0 µm</div>
+                        <div class="raw-value"><span id="val-pt-r10">--</span><span class="unit">cnt/0.1L</span></div>
+                    </div>
+                    <div class="raw-cell">
+                        <div class="raw-label">&gt; 2.5 µm</div>
+                        <div class="raw-value"><span id="val-pt-r25">--</span><span class="unit">cnt/0.1L</span></div>
+                    </div>
+                    <div class="raw-cell">
+                        <div class="raw-label">&gt; 5.0 µm</div>
+                        <div class="raw-value"><span id="val-pt-r50">--</span><span class="unit">cnt/0.1L</span></div>
+                    </div>
+                    <div class="raw-cell">
+                        <div class="raw-label">&gt; 10 µm</div>
+                        <div class="raw-value"><span id="val-pt-r100">--</span><span class="unit">cnt/0.1L</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="bottom-panel">
+        <div class="segment-group" id="mode-group">
+            <div class="segment-bg" id="mode-bg"></div>
+            <button class="segment-btn active" id="btn-auto" onclick="setMode('auto')">Auto</button>
+            <button class="segment-btn" id="btn-manual" onclick="setMode('manual')">Manual</button>
+        </div>
+
+        <div class="segment-group heater-off" id="heater-group">
+            <div class="segment-bg" id="heater-bg"></div>
+            <button class="segment-btn" id="btn-on" onclick="setHeater('high')">Heater ON</button>
+            <button class="segment-btn active" id="btn-off" onclick="setHeater('low')">Off</button>
+        </div>
+
+        <button class="export-btn" onclick="exportCSV()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
+            Export CSV
+        </button>
+    </div>
+
+    <script>
+        const datasetsConfig = [
+            { label: 'Thermistor', field: 'Thermistor_C', borderColor: '#d7a115', hidden: false },
+            { label: 'Conditioned Temp', field: 'Conditioned_Temp_C', borderColor: '#dd5f42', hidden: true },
+            { label: 'Conditioned Humidity', field: 'Conditioned_Humidity_Pct', borderColor: '#3f88c5', hidden: false },
+            { label: 'SPS30 PM 1.0', field: 'SPS30_PM1.0_ug_m3', borderColor: '#4d9f72', hidden: true },
+            { label: 'SPS30 PM 2.5', field: 'SPS30_PM2.5_ug_m3', borderColor: '#2a9d8f', hidden: false },
+            { label: 'SPS30 PM 4.0', field: 'SPS30_PM4.0_ug_m3', borderColor: '#8db24e', hidden: true },
+            { label: 'SPS30 PM 10', field: 'SPS30_PM10_ug_m3', borderColor: '#317f64', hidden: true },
+            { label: 'SPS30 >0.5µm', field: 'SPS30_Count0.5_per_cm3', borderColor: '#8f6cba', hidden: false },
+            { label: 'SPS30 >1.0µm', field: 'SPS30_Count1.0_per_cm3', borderColor: '#6572c8', hidden: true },
+            { label: 'PMS5003 PM 2.5', field: 'PMS5003_PM2.5_Standard_ug_m3', borderColor: '#c17458', hidden: true }
+        ];
+
+        const telemetryFields = [
+            "Mode",
+            "Heater",
+            "Ambient_Temp_C",
+            "Ambient_Humidity_Pct",
+            "Conditioned_Temp_C",
+            "Conditioned_Humidity_Pct",
+            "Thermistor_C",
+            "SPS30_PM1.0_ug_m3",
+            "SPS30_PM2.5_ug_m3",
+            "SPS30_PM4.0_ug_m3",
+            "SPS30_PM10_ug_m3",
+            "SPS30_Count0.5_per_cm3",
+            "SPS30_Count1.0_per_cm3",
+            "SPS30_Count2.5_per_cm3",
+            "SPS30_Count4.0_per_cm3",
+            "SPS30_Count10_per_cm3",
+            "SPS30_Typical_Particle_Size_um",
+            "PMS5003_PM1.0_Standard_ug_m3",
+            "PMS5003_PM2.5_Standard_ug_m3",
+            "PMS5003_PM10_Standard_ug_m3",
+            "PMS5003_PM1.0_Atmospheric_ug_m3",
+            "PMS5003_PM2.5_Atmospheric_ug_m3",
+            "PMS5003_PM10_Atmospheric_ug_m3",
+            "PMS5003_Count0.3_per_0.1L",
+            "PMS5003_Count0.5_per_0.1L",
+            "PMS5003_Count1.0_per_0.1L",
+            "PMS5003_Count2.5_per_0.1L",
+            "PMS5003_Count5.0_per_0.1L",
+            "PMS5003_Count10_per_0.1L"
+        ];
+
+        const fieldIndex = telemetryFields.reduce((lookup, field, index) => {
+            lookup[field] = index;
+            return lookup;
+        }, {});
+
+        const telemetryChart = {
+            data: {
+                labels: [],
+                datasets: datasetsConfig.map(ds => ({
+                    label: ds.label,
+                    field: ds.field,
+                    borderColor: ds.borderColor,
+                    data: [],
+                    hidden: ds.hidden
+                }))
+            },
+            getDatasetMeta(index) {
+                return { hidden: this.data.datasets[index].hidden };
+            },
+            setDatasetVisibility(index, visible) {
+                this.data.datasets[index].hidden = !visible;
+            },
+            update() {
+                drawTelemetryChart();
+            }
+        };
+
+        const chartCanvas = document.getElementById('telemetryChart');
+        const chartCtx = chartCanvas.getContext('2d');
+
+        function setConnectionState(label, isLive = false) {
+            const status = document.getElementById('connection-status');
+            document.getElementById('connection-label').innerText = label;
+            status.classList.toggle('live', isLive);
+        }
+
+        function setMode(mode, send = true) {
+            const group = document.getElementById('mode-group');
+            document.getElementById('btn-auto').classList.toggle('active', mode === 'auto');
+            document.getElementById('btn-manual').classList.toggle('active', mode === 'manual');
+            group.classList.toggle('mode-manual', mode === 'manual');
+            if (send) sendCommand(mode);
+        }
+
+        function setHeater(state, send = true) {
+            const group = document.getElementById('heater-group');
+            document.getElementById('btn-on').classList.toggle('active', state === 'high');
+            document.getElementById('btn-off').classList.toggle('active', state === 'low');
+            group.classList.toggle('heater-off', state === 'low');
+            if (send) sendCommand(state);
+        }
+
+        function drawTelemetryChart() {
+            const rect = chartCanvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            const width = Math.max(1, Math.floor(rect.width));
+            const height = Math.max(1, Math.floor(rect.height));
+
+            if (chartCanvas.width !== width * dpr || chartCanvas.height !== height * dpr) {
+                chartCanvas.width = width * dpr;
+                chartCanvas.height = height * dpr;
+            }
+
+            chartCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            chartCtx.clearRect(0, 0, width, height);
+
+            const padding = { top: 14, right: 88, bottom: 34, left: 52 };
+            const plotW = width - padding.left - padding.right;
+            const plotH = height - padding.top - padding.bottom;
+            const visibleDatasets = telemetryChart.data.datasets.filter(ds => !ds.hidden && ds.data.some(v => Number.isFinite(v)));
+
+            chartCtx.strokeStyle = 'rgba(20, 32, 34, 0.11)';
+            chartCtx.lineWidth = 1;
+            chartCtx.font = '11px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
+            chartCtx.fillStyle = 'rgba(20, 32, 34, 0.54)';
+
+            if (!visibleDatasets.length) {
+                drawGrid(padding, plotW, plotH, width, null, null);
+                chartCtx.textAlign = 'left';
+                chartCtx.fillText('Waiting for telemetry...', padding.left, padding.top + 22);
+                return;
+            }
+
+            const values = visibleDatasets.flatMap(ds => ds.data.filter(v => Number.isFinite(v)));
+            let min = Math.min(...values);
+            let max = Math.max(...values);
+            if (min === max) {
+                min -= 1;
+                max += 1;
+            }
+
+            const range = max - min;
+            min -= range * 0.08;
+            max += range * 0.08;
+
+            drawGrid(padding, plotW, plotH, width, min, max);
+
+            const maxPoints = Math.max(...visibleDatasets.map(ds => ds.data.length), 2);
+            const xFor = index => padding.left + (plotW * index / Math.max(1, maxPoints - 1));
+            const yFor = value => padding.top + plotH - ((value - min) / (max - min)) * plotH;
+
+            chartCtx.textBaseline = 'alphabetic';
+            chartCtx.textAlign = 'left';
+            chartCtx.fillStyle = 'rgba(20, 32, 34, 0.46)';
+            chartCtx.fillText(telemetryChart.data.labels[0] || '', padding.left, height - 8);
+            chartCtx.textAlign = 'right';
+            chartCtx.fillText(telemetryChart.data.labels[telemetryChart.data.labels.length - 1] || '', width - padding.right, height - 8);
+
+            visibleDatasets.forEach(ds => {
+                const points = chartPoints(ds, xFor, yFor);
+                if (!points.length) return;
+
+                if (ds.field === 'SPS30_PM2.5_ug_m3') {
+                    const fill = chartCtx.createLinearGradient(0, padding.top, 0, padding.top + plotH);
+                    fill.addColorStop(0, colorWithAlpha(ds.borderColor, 0.18));
+                    fill.addColorStop(0.55, colorWithAlpha(ds.borderColor, 0.06));
+                    fill.addColorStop(1, colorWithAlpha(ds.borderColor, 0));
+
+                    chartCtx.beginPath();
+                    drawSmoothPath(points);
+                    chartCtx.lineTo(points[points.length - 1].x, padding.top + plotH);
+                    chartCtx.lineTo(points[0].x, padding.top + plotH);
+                    chartCtx.closePath();
+                    chartCtx.fillStyle = fill;
+                    chartCtx.fill();
+                }
+
+                chartCtx.strokeStyle = ds.borderColor;
+                chartCtx.lineWidth = ds.field === 'SPS30_PM2.5_ug_m3' ? 3 : 2.35;
+                chartCtx.lineCap = 'round';
+                chartCtx.lineJoin = 'round';
+                chartCtx.beginPath();
+                drawSmoothPath(points);
+                chartCtx.stroke();
+            });
+
+            visibleDatasets.slice(0, 5).forEach((ds, index) => {
+                const latest = [...ds.data].reverse().find(v => Number.isFinite(v));
+                if (!Number.isFinite(latest)) return;
+                const y = Math.min(height - padding.bottom - 8, Math.max(padding.top + 8, yFor(latest)));
+                const labelY = y + index * 2;
+                chartCtx.fillStyle = ds.borderColor;
+                chartCtx.fillRect(width - padding.right + 10, labelY - 5, 8, 8);
+                chartCtx.fillStyle = 'rgba(20, 32, 34, 0.72)';
+                chartCtx.textAlign = 'left';
+                chartCtx.textBaseline = 'middle';
+                chartCtx.fillText(formatDisplay(latest, 1), width - padding.right + 24, labelY);
+            });
+        }
+
+        function chartPoints(dataset, xFor, yFor) {
+            return dataset.data
+                .map((value, index) => Number.isFinite(value) ? { x: xFor(index), y: yFor(value) } : null)
+                .filter(Boolean);
+        }
+
+        function drawSmoothPath(points) {
+            if (!points.length) return;
+            chartCtx.moveTo(points[0].x, points[0].y);
+
+            for (let i = 1; i < points.length; i++) {
+                const previous = points[i - 1];
+                const current = points[i];
+                const midX = (previous.x + current.x) / 2;
+                chartCtx.quadraticCurveTo(previous.x, previous.y, midX, (previous.y + current.y) / 2);
+                chartCtx.quadraticCurveTo(current.x, current.y, current.x, current.y);
+            }
+        }
+
+        function colorWithAlpha(hex, alpha) {
+            const value = hex.replace('#', '');
+            const r = parseInt(value.slice(0, 2), 16);
+            const g = parseInt(value.slice(2, 4), 16);
+            const b = parseInt(value.slice(4, 6), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        function drawGrid(padding, plotW, plotH, width, min, max) {
+            chartCtx.strokeStyle = 'rgba(20, 32, 34, 0.065)';
+            chartCtx.fillStyle = 'rgba(20, 32, 34, 0.46)';
+            chartCtx.textAlign = 'right';
+            chartCtx.textBaseline = 'middle';
+            for (let i = 0; i <= 4; i++) {
+                const y = padding.top + (plotH * i / 4);
+                chartCtx.beginPath();
+                chartCtx.setLineDash(i === 0 || i === 4 ? [] : [4, 7]);
+                chartCtx.moveTo(padding.left, y);
+                chartCtx.lineTo(width - padding.right, y);
+                chartCtx.stroke();
+                chartCtx.setLineDash([]);
+                if (Number.isFinite(min) && Number.isFinite(max)) {
+                    const value = max - ((max - min) * i / 4);
+                    chartCtx.fillText(formatDisplay(value, 1), padding.left - 8, y);
+                }
+            }
+        }
+
+        const layerMenu = document.getElementById('layer-menu');
+
+        function toggleLayerMenu(event) {
+            event.stopPropagation();
+            layerMenu.classList.toggle('show');
+        }
+
+        document.addEventListener('click', event => {
+            if (!layerMenu.contains(event.target)) layerMenu.classList.remove('show');
+        });
+
+        telemetryChart.data.datasets.forEach((dataset, index) => {
+            const item = document.createElement('div');
+            item.className = `dropdown-item ${dataset.hidden ? '' : 'active'}`;
+            item.innerHTML = `
+                <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <div class="indicator" style="background-color: ${dataset.borderColor};"></div>
+                ${dataset.label}
+            `;
+            item.onclick = event => {
+                event.stopPropagation();
+                const isCurrentlyHidden = telemetryChart.getDatasetMeta(index).hidden;
+                telemetryChart.setDatasetVisibility(index, isCurrentlyHidden);
+                const isNowHidden = telemetryChart.getDatasetMeta(index).hidden;
+                item.classList.toggle('active', !isNowHidden);
+                telemetryChart.update();
+            };
+            layerMenu.appendChild(item);
+        });
+
+        let ws;
+        let buffer = "";
+        let authenticated = false;
+        let passwordSent = false;
+        let passwordTimer = null;
+        let telemetrySeen = false;
+        let sdRefreshTimer = null;
+        let sdReadTimer = null;
+        let openSdFile = null;
+        let pendingSdEntries = null;
+        let sessionData = [["Timestamp", ...telemetryFields]];
+
+        function csvCell(value) {
+            const text = String(value ?? "");
+            if (/[",\n\r]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
+            return text;
+        }
+
+        function exportCSV() {
+            if (sessionData.length <= 1) {
+                alert("No data to export.");
+                return;
+            }
+            const csv = sessionData.map(row => row.map(csvCell).join(",")).join("\n");
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `intake_telemetry_${new Date().getTime()}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        document.getElementById('connectBtn').addEventListener('click', () => {
+            if (ws) {
+                ws.close();
+                return;
+            }
+            const ip = document.getElementById('ipAddress').value.trim();
+            setConnectionState('Connecting');
+            ws = new WebSocket(`ws://${ip}:8266`);
+
+            ws.onopen = () => {
+                setConnectionState('Authenticating');
+                document.getElementById('connectBtn').innerText = "Disconnect";
+                buffer = "";
+                authenticated = false;
+                passwordSent = false;
+                telemetrySeen = false;
+                if (passwordTimer) clearTimeout(passwordTimer);
+                passwordTimer = setTimeout(() => {
+                    if (!passwordSent) sendWebReplPassword();
+                }, 600);
+            };
+            ws.onmessage = event => {
+                if (typeof event.data === "string") {
+                    buffer += event.data;
+                } else {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        buffer += reader.result;
+                        processBuffer();
+                    };
+                    reader.readAsText(event.data);
+                    return;
+                }
+                processBuffer();
+            };
+            ws.onclose = () => {
+                ws = null;
+                authenticated = false;
+                passwordSent = false;
+                telemetrySeen = false;
+                if (passwordTimer) {
+                    clearTimeout(passwordTimer);
+                    passwordTimer = null;
+                }
+                setConnectionState('Offline');
+                document.getElementById('connectBtn').innerText = "Connect";
+            };
+            ws.onerror = () => {
+                setConnectionState('Connection failed');
+            };
+        });
+
+        function sendCommand(command) {
+            if (ws && ws.readyState === WebSocket.OPEN) ws.send(command + "\r\n");
+        }
+
+        function sendWebReplPassword() {
+            const pass = document.getElementById('webReplPass').value.trim();
+            if (!pass) {
+                if (ws) ws.close();
+                return;
+            }
+            passwordSent = true;
+            authenticated = true;
+            setConnectionState('Connected, waiting for data', true);
+            ws.send(pass + "\r\n");
+        }
+
+        function refreshSdFiles() {
+            if (!ws || ws.readyState !== WebSocket.OPEN || !authenticated) {
+                setSdStatus("Connect to the ESP32 first");
+                return;
+            }
+            setSdStatus("Refreshing...");
+            if (sdRefreshTimer) clearTimeout(sdRefreshTimer);
+            sdRefreshTimer = setTimeout(() => {
+                setSdStatus("No SD file response. Check that the updated main.py is running.");
+            }, 15000);
+            pendingSdEntries = [];
+            sendCommand("sdlist");
+        }
+
+        function remountSdCard() {
+            if (!ws || ws.readyState !== WebSocket.OPEN || !authenticated) {
+                setSdStatus("Connect to the ESP32 first");
+                return;
+            }
+            setSdStatus("Remounting...");
+            sendCommand("sdremount");
+            setTimeout(refreshSdFiles, 4500);
+        }
+
+        function setSdStatus(message) {
+            document.getElementById('sd-status').innerText = message;
+        }
+
+        function formatBytes(bytes) {
+            if (!Number.isFinite(bytes)) return "--";
+            if (bytes < 1024) return `${bytes} B`;
+            if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+            return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+        }
+
+        function escapeHtml(text) {
+            return String(text).replace(/[&<>"']/g, char => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[char]);
+        }
+
+        function renderSdFiles(entries) {
+            if (sdRefreshTimer) {
+                clearTimeout(sdRefreshTimer);
+                sdRefreshTimer = null;
+            }
+            const list = document.getElementById('sd-file-list');
+
+            if (!entries.length) {
+                list.innerHTML = '<div class="sd-empty">Card is mounted, but no files were found</div>';
+                setSdStatus("0 files");
+                return;
+            }
+
+            list.innerHTML = entries.map(entry => `
+                <div class="sd-file-row" role="button" tabindex="0" data-file="${escapeHtml(entry.name)}" data-kind="${escapeHtml(entry.kind)}" onclick="requestSdFile(this.dataset.file, this.dataset.kind)">
+                    <div class="sd-file-name" title="${escapeHtml(entry.name)}">${entry.kind === "dir" ? "Folder: " : ""}${escapeHtml(entry.name)}</div>
+                    <div class="sd-file-size">${entry.kind === "dir" ? "folder" : formatBytes(entry.size)}</div>
+                </div>
+            `).join("");
+            setSdStatus(`${entries.length} item${entries.length === 1 ? "" : "s"} found`);
+        }
+
+        function parseSdEntry(payload) {
+            const parts = payload.split("|");
+            if (parts.length < 3 || !pendingSdEntries) return;
+            pendingSdEntries.push({
+                kind: parts[0],
+                name: parts.slice(1, -1).join("|"),
+                size: parseInt(parts[parts.length - 1], 10)
+            });
+        }
+
+        function finishSdList() {
+            renderSdFiles(pendingSdEntries || []);
+            pendingSdEntries = null;
+        }
+
+        function renderLegacySdFiles(payload) {
+            const entries = payload
+                .split(",")
+                .map(item => item.trim())
+                .filter(Boolean)
+                .map(item => {
+                    const separator = item.lastIndexOf("|");
+                    return {
+                        kind: "file",
+                        name: separator >= 0 ? item.slice(0, separator) : item,
+                        size: separator >= 0 ? parseInt(item.slice(separator + 1), 10) : NaN
+                    };
+                });
+            renderSdFiles(entries);
+        }
+
+        function requestSdFile(filename, kind = "file") {
+            if (kind === "dir") {
+                setSdStatus("Select a file, not a folder");
+                return;
+            }
+            if (!ws || ws.readyState !== WebSocket.OPEN || !authenticated) {
+                setSdStatus("Connect to the ESP32 first");
+                return;
+            }
+
+            openSdFile = { name: filename, lines: [], loaded: false };
+            document.getElementById('sd-viewer').classList.add('show');
+            document.getElementById('sd-viewer-title').innerText = filename;
+            document.getElementById('sd-file-preview').innerText = "Opening...";
+            setSdStatus(`Opening ${filename}`);
+
+            if (sdReadTimer) clearTimeout(sdReadTimer);
+            sdReadTimer = setTimeout(() => {
+                setSdStatus("No file response. Check that the updated main.py is running.");
+            }, 20000);
+
+            sendCommand(`sdread ${filename}`);
+        }
+
+        function beginSdFile(filename) {
+            openSdFile = { name: filename, lines: [], loaded: false };
+            document.getElementById('sd-viewer').classList.add('show');
+            document.getElementById('sd-viewer-title').innerText = filename;
+            document.getElementById('sd-file-preview').innerText = "";
+        }
+
+        function appendSdFileLine(line) {
+            if (!openSdFile) return;
+            openSdFile.lines.push(line);
+        }
+
+        function finishSdFile() {
+            if (sdReadTimer) {
+                clearTimeout(sdReadTimer);
+                sdReadTimer = null;
+            }
+            if (!openSdFile) return;
+
+            openSdFile.loaded = true;
+            const text = openSdFile.lines.join("\n");
+            document.getElementById('sd-file-preview').innerText = text || "(empty file)";
+            setSdStatus(`Opened ${openSdFile.name}`);
+        }
+
+        function failSdFile(message) {
+            if (sdReadTimer) {
+                clearTimeout(sdReadTimer);
+                sdReadTimer = null;
+            }
+            setSdStatus(message);
+            document.getElementById('sd-file-preview').innerText = message;
+        }
+
+        function downloadOpenSdFile() {
+            if (!openSdFile || !openSdFile.loaded) {
+                setSdStatus("Open a file first");
+                return;
+            }
+
+            const blob = new Blob([openSdFile.lines.join("\n")], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = openSdFile.name;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function processBuffer() {
+            if (!passwordSent && buffer.includes("Password:")) {
+                if (passwordTimer) {
+                    clearTimeout(passwordTimer);
+                    passwordTimer = null;
+                }
+                sendWebReplPassword();
+                buffer = "";
+                return;
+            }
+
+            if (!authenticated && (buffer.includes(">>>") || buffer.includes("DATA:"))) {
+                authenticated = true;
+                passwordSent = true;
+                setConnectionState('Streaming Live', true);
+            }
+
+            const lines = buffer.split("\n");
+            buffer = lines.pop();
+            for (const line of lines) {
+                if (line.includes("DATA:")) parseData(line.substring(line.indexOf("DATA:") + 5).trim());
+                if (line.includes("SD_FILES_BEGIN")) pendingSdEntries = [];
+                if (line.includes("SD_FILE_ENTRY:")) parseSdEntry(line.substring(line.indexOf("SD_FILE_ENTRY:") + 14).trim());
+                if (line.includes("SD_FILES_END")) finishSdList();
+                if (line.includes("SD_FILES:")) renderLegacySdFiles(line.substring(line.indexOf("SD_FILES:") + 9).trim());
+                if (line.includes("SD_FILES_ERROR:")) {
+                    if (sdRefreshTimer) {
+                        clearTimeout(sdRefreshTimer);
+                        sdRefreshTimer = null;
+                    }
+                    setSdStatus(line.substring(line.indexOf("SD_FILES_ERROR:") + 15).trim());
+                }
+                if (line.includes("SD_REMOUNT:OK")) setSdStatus("SD card mounted");
+                if (line.includes("SD_REMOUNT:FAILED")) setSdStatus("SD card not mounted");
+                if (line.includes("SD_FILE_BEGIN:")) beginSdFile(line.substring(line.indexOf("SD_FILE_BEGIN:") + 14).trim());
+                if (line.includes("SD_FILE_LINE:")) appendSdFileLine(line.substring(line.indexOf("SD_FILE_LINE:") + 13));
+                if (line.includes("SD_FILE_END:")) finishSdFile();
+                if (line.includes("SD_FILE_ERROR:")) failSdFile(line.substring(line.indexOf("SD_FILE_ERROR:") + 14).trim());
+            }
+        }
+
+        function updateAtmosphere(pm25) {
+            if (!Number.isFinite(pm25)) return;
+
+            const body = document.body;
+            const aqiText = document.getElementById('aqi-descriptor');
+            body.classList.remove('theme-clear', 'theme-moderate', 'theme-unhealthy');
+
+            if (pm25 <= 12) {
+                body.classList.add('theme-clear');
+                aqiText.innerText = "Air Quality: Ideal";
+            } else if (pm25 <= 35) {
+                body.classList.add('theme-moderate');
+                aqiText.innerText = "Air Quality: Moderate";
+            } else {
+                body.classList.add('theme-unhealthy');
+                aqiText.innerText = "Air Quality: High Risk";
+            }
+        }
+
+        function parseNumber(value) {
+            if (value === "Err") return null;
+            const parsed = parseFloat(value);
+            return Number.isFinite(parsed) ? parsed : null;
+        }
+
+        function formatDisplay(value, decimals = 1) {
+            if (!Number.isFinite(value)) return "--";
+            return value.toFixed(decimals);
+        }
+
+        function formatCount(value) {
+            if (!Number.isFinite(value)) return "--";
+            return Math.round(value).toString();
+        }
+
+        function setFormattedValue(id, rawValue, decimals = 1) {
+            document.getElementById(id).innerText = formatDisplay(parseNumber(rawValue), decimals);
+        }
+
+        function setFormattedCount(id, rawValue) {
+            document.getElementById(id).innerText = formatCount(parseNumber(rawValue));
+        }
+
+        function parseData(dataStr) {
+            const parts = dataStr.split(",");
+            if (parts.length < telemetryFields.length) return;
+            if (!telemetrySeen) {
+                telemetrySeen = true;
+                setConnectionState('Streaming Live', true);
+            }
+            const values = parts.slice(0, telemetryFields.length);
+            const get = field => values[fieldIndex[field]];
+
+            const now = new Date();
+            const timeString = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+            sessionData.push([timeString, ...values]);
+
+            setMode(get("Mode") === "AUTOMATIC" ? 'auto' : 'manual', false);
+            setHeater(get("Heater") === "ON" ? 'high' : 'low', false);
+
+            setFormattedValue('val-ambt', get("Ambient_Temp_C"), 1);
+            setFormattedValue('val-ambh', get("Ambient_Humidity_Pct"), 1);
+            setFormattedValue('val-dhtt', get("Conditioned_Temp_C"), 1);
+            setFormattedValue('val-dhth', get("Conditioned_Humidity_Pct"), 1);
+            setFormattedValue('val-wall', get("Thermistor_C"), 1);
+
+            const pm25Val = parseNumber(get("SPS30_PM2.5_ug_m3"));
+            setFormattedValue('val-pm1', get("SPS30_PM1.0_ug_m3"), 2);
+            setFormattedValue('val-pm25', get("SPS30_PM2.5_ug_m3"), 2);
+            setFormattedValue('val-pm4', get("SPS30_PM4.0_ug_m3"), 2);
+            setFormattedValue('val-pm10', get("SPS30_PM10_ug_m3"), 2);
+            setFormattedValue('val-sps-tps', get("SPS30_Typical_Particle_Size_um"), 2);
+            setFormattedValue('val-sps-pm1', get("SPS30_PM1.0_ug_m3"), 2);
+            setFormattedValue('val-sps-pm25', get("SPS30_PM2.5_ug_m3"), 2);
+            setFormattedValue('val-sps-pm4', get("SPS30_PM4.0_ug_m3"), 2);
+            setFormattedValue('val-sps-pm10', get("SPS30_PM10_ug_m3"), 2);
+            setFormattedValue('val-sps-tps-detail', get("SPS30_Typical_Particle_Size_um"), 2);
+            setFormattedValue('val-sps-c05', get("SPS30_Count0.5_per_cm3"), 1);
+            setFormattedValue('val-sps-c10', get("SPS30_Count1.0_per_cm3"), 1);
+            setFormattedValue('val-sps-c25', get("SPS30_Count2.5_per_cm3"), 1);
+            setFormattedValue('val-sps-c40', get("SPS30_Count4.0_per_cm3"), 1);
+            setFormattedValue('val-sps-c100', get("SPS30_Count10_per_cm3"), 1);
+
+            setFormattedValue('val-pt-pm1-std', get("PMS5003_PM1.0_Standard_ug_m3"), 0);
+            setFormattedValue('val-pt-pm25-std', get("PMS5003_PM2.5_Standard_ug_m3"), 0);
+            setFormattedValue('val-pt-pm10-std', get("PMS5003_PM10_Standard_ug_m3"), 0);
+            setFormattedValue('val-pt-pm1-env', get("PMS5003_PM1.0_Atmospheric_ug_m3"), 0);
+            setFormattedValue('val-pt-pm25-env', get("PMS5003_PM2.5_Atmospheric_ug_m3"), 0);
+            setFormattedValue('val-pt-pm10-env', get("PMS5003_PM10_Atmospheric_ug_m3"), 0);
+            setFormattedCount('val-pt-r03', get("PMS5003_Count0.3_per_0.1L"));
+            setFormattedCount('val-pt-r05', get("PMS5003_Count0.5_per_0.1L"));
+            setFormattedCount('val-pt-r10', get("PMS5003_Count1.0_per_0.1L"));
+            setFormattedCount('val-pt-r25', get("PMS5003_Count2.5_per_0.1L"));
+            setFormattedCount('val-pt-r50', get("PMS5003_Count5.0_per_0.1L"));
+            setFormattedCount('val-pt-r100', get("PMS5003_Count10_per_0.1L"));
+
+            updateAtmosphere(pm25Val);
+
+            telemetryChart.data.labels.push(timeString);
+            telemetryChart.data.datasets.forEach(dataset => {
+                dataset.data.push(parseNumber(get(dataset.field)));
+            });
+
+            if (telemetryChart.data.labels.length > 45) {
+                telemetryChart.data.labels.shift();
+                telemetryChart.data.datasets.forEach(dataset => dataset.data.shift());
+            }
+            telemetryChart.update();
+        }
+
+        window.addEventListener('resize', () => telemetryChart.update());
+        window.setMode = setMode;
+        window.setHeater = setHeater;
+        window.toggleLayerMenu = toggleLayerMenu;
+        window.exportCSV = exportCSV;
+        window.refreshSdFiles = refreshSdFiles;
+        window.remountSdCard = remountSdCard;
+        window.requestSdFile = requestSdFile;
+        window.downloadOpenSdFile = downloadOpenSdFile;
+        window.parseData = parseData;
+        telemetryChart.update();
+    </script>
+</body>
+</html>
