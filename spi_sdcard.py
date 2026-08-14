@@ -1,3 +1,5 @@
+# Note: This file was developed with the assistance of AI code generation tools.
+
 """SPI-mode microSD block device for MicroPython."""
 
 import time
