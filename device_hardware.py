@@ -1,7 +1,5 @@
 # Note: This file was developed with the assistance of AI code generation tools.
 
-"""AI-assisted hardware setup and sensor reading helpers."""
-
 import machine
 
 from adafruit_sht4x import Mode, SHT4x
