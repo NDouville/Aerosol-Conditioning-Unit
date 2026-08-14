@@ -70,6 +70,3 @@ else:
     print("Wi-Fi unavailable after {} attempts".format(AP_START_ATTEMPTS))
 
 print("Boot complete; MicroPython will now start main.py")
-
-# Do not import main here. MicroPython automatically executes main.py after
-# boot.py returns, which keeps boot and application failures distinguishable.
